@@ -1,0 +1,80 @@
+version: '2'
+
+### Change the `project` with your own project name ###
+### Document https://github.com/FramgiaDockerTeam/laravel-microservices ###
+services:
+    application:
+        container_name: project_application
+        image: debian
+        volumes:
+            - ./:/var/www/laravel
+    workspace:
+        container_name: project_workspace
+        restart: always
+        image: framgia/laravel-workspace
+        volumes_from:
+            - application
+        tty: true
+    php-fpm:
+        container_name: project_php-fpm
+        restart: always
+        image: framgia/laravel-php-fpm
+        volumes_from:
+            - application
+            - data
+        expose:
+            - "9000"
+        links:
+            - workspace
+    nginx:
+        container_name: project_nginx
+        restart: always
+        image: framgia/laravel-nginx
+        volumes_from:
+            - data
+            - application
+        ports:
+            - "8000:80"
+        links:
+            - php-fpm
+    data:
+        container_name: project_data
+        image: debian
+        volumes:
+            - .docker/mysql:/var/lib/mysql
+            - .docker/data:/data
+            - .docker/logs/nginx:/var/log/nginx
+            - .docker/logs/php-fpm:/var/log/php-fpm
+            - .docker/logs/mysql:/var/log/mysql
+            - .docker/logs/mongodb:/var/log/mongodb
+    mysql:
+        container_name: project_mysql
+        restart: always
+        image: mysql
+        command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+        volumes:
+            - ./.docker/provision/mysql/init:/docker-entrypoint-initdb.d
+        volumes_from:
+            - data
+        expose:
+            - "3306"
+        # ports:
+        #    - "3306:3306"
+        environment:
+            MYSQL_ROOT_PASSWORD: root
+    # mongo:
+    #     container_name: project_mongo
+    #     restart: always
+    #     image: mongo
+    #     expose:
+    #         - "27017"
+    #     volumes_from:
+    #         - data
+    # redis:
+    #     container_name: project_redis
+    #     restart: always
+    #     image: redis
+    #     expose:
+    #         - "6379"
+    #     volumes_from:
+    #         - data
