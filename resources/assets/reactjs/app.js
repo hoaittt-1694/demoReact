@@ -13,5 +13,7 @@ require('./bootstrap');
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
-require('./components/Example');
-require('./components/Todo');
+// require('./components/Example');
+require('./components/App');
+require('./components/ListFunction');
+require('./components/List');
