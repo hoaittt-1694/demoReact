@@ -7,7 +7,7 @@ export const getList = () => {
         }
     })
     .then(res => {
-        return res;
+        return res.data;
     })
 }
 
@@ -32,10 +32,10 @@ export const updateItem = (title, id) => {
         headers: {'Content-Type':'applycation/json'}
     })
     .then(res => {
-        console.log($res)
+        console.log(res)
     })
     .catch(err => {
-        console.log($err)
+        console.log(err)
     })
 }
 
@@ -45,9 +45,9 @@ export const deleteItem = id => {
         headers: {'Content-Type':'applycation/json'}
     })
     .then(res => {
-        console.log($res)
+        console.log(res)
     })
     .catch(err => {
-        console.log($err)
+        console.log(err)
     })
 }

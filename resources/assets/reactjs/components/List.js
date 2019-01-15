@@ -10,24 +10,13 @@ class List extends Component {
             editDisabled:false,
             items:[]
         }
-
         this.onSubmit = this.onSubmit.bind(this)
         this.onChange = this.onChange.bind(this)
     }
 
     componentDidMount(){
-        getList().then(res => {
-            this.setState({
-                items: res.data
-            })
-        });
+        this.getAll();
     }
-
-    // onChange = e => {
-    //     this.setState({
-    //         [e.target.name]: e.target.value
-    //     })
-    // }
 
     onChange(e){
         this.setState({
@@ -35,40 +24,20 @@ class List extends Component {
         });
     }
 
-    // getAll = () => {
-    //     getList.then(data => {
-    //         this.setState({
-    //             title: '',
-    //             items: [...data]
-    //         },
-    //         () => { console.log(this.state.items)
-    //         })
-    //     })
-    // }
+    getAll() {
+        getList().then(data => {
+            this.setState({
+                title: '',
+                items: [...data]
+            },
+            // () => { console.log(this.state.items)
+            // }
+            )
+        })
+    }
 
-    // getAll() {
-    //     getList.then(data => {
-    //         this.setState({
-    //             title: '',
-    //             items: [...data]
-    //         },
-    //         () => { console.log(this.state.items)
-    //         })
-    //     })
-    // }
-
-    // onSubmit = e => {
-    //     e.preventDefault()
-    //     addItem(this.state.title).then(() => {
-    //         this.getAll()
-    //     })
-    //     this.setState({
-    //         title: ''
-    //     })
-    // }
-
-    onSubmit(e){
-        e.preventDefault()
+    onSubmit(event){
+        event.preventDefault()
         addItem(this.state.title).then(() => {
             this.getAll()
         })
@@ -76,18 +45,6 @@ class List extends Component {
             title: ''
         })
     }
-
-    // onUpdate = e => {
-    //     e.preventDefault()
-    //     updateItem(this.state.title, this.state.id).then(() => {
-    //         this.getAll()
-    //     })
-    //     this.setState({
-    //         title: '',
-    //         editDisabled:''
-    //     })
-    //     this.getAll()
-    // }
 
     onUpdate(e){
         e.preventDefault()
@@ -100,21 +57,6 @@ class List extends Component {
         })
         this.getAll()
     }
-
-    // onEdit = (itemid, e) => {
-    //     e.preventDefault()
-
-    //     var data = [...this.state.items]
-    //     data.forEach((item,index) => {
-    //         if(item.id == itemid) {
-    //             this.setState({
-    //                 id:item.id,
-    //                 title:item.title,
-    //                 editDisabled:true
-    //             })
-    //         }
-    //     })
-    // }
 
     onEdit(itemid, e){
         e.preventDefault()
@@ -131,16 +73,10 @@ class List extends Component {
         })
     }
 
-    // onDelete = (val, e) => {
-    //     e.preventDefault()
-    //     deleteItem(val)
-    //     this.getAll()
-    // }
-
     onDelete (val, e){
         e.preventDefault()
         deleteItem(val)
-        this.getList()
+        this.getAll()
     }
 
     render() {
@@ -159,7 +95,7 @@ class List extends Component {
                     </div>
                     {!this.state.editDisabled ? (
                         <button type="submit" 
-                        className= "btn btn-succes btn-block"
+                        className= "btn btn-success btn-block"
                         onClick={this.onSubmit.bind(this)}>Submit</button>
                     ) : (
                         ''
