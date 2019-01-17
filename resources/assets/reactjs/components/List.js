@@ -1,14 +1,15 @@
 import React, { Component } from 'react';
 import * as ToDoAPI from '../api/ToDo';
 
-class List extends Component {
+export default class List extends Component {
     constructor() {
         super()
         this.state = {
-                id: '',
-                title: '',
-                editDisabled:false,
-                items:[]
+            id: '',
+            title: '',
+            editDisabled:false,
+            errors: '', 
+            items:[]
         }
         this.onSubmit = this.onSubmit.bind(this)
         this.onChange = this.onChange.bind(this)
@@ -20,6 +21,7 @@ class List extends Component {
 
     onChange(e) {
         this.setState({
+            errors: '',
             [e.target.name]: e.target.value
         })
     }
@@ -35,41 +37,56 @@ class List extends Component {
 
     onSubmit(e) {
         e.preventDefault()
-
         ToDoAPI.addTask(this.state.title).then((data) => {
-            let items = [...this.state.items]
-            items.push(data)
-            this.setState({
-                title: '',
-                items: items
-            })
+            if (!data.errors) {
+                let items = [...this.state.items]
+                items.push(data)
+                this.setState({
+                    title: '',
+                    items: items
+                })
+            } else {
+                this.setState({
+                    title: '',
+                    errors: data.errors.title[0]  
+                })
+            }
+           
         })
     }
 
     onUpdate(e) {
         e.preventDefault()
         let items = [...this.state.items]
-        ToDoAPI.updateTask(this.state.title, this.state.id).then((data) => {          
-            items.some((item, index) => {
-                if(item.id == data.id) {
-                    items[index] = data
-                    return true
-                }
-                return false
-            })
-            this.setState({
-                title: '',
-                items: items,
-                editDisabled: ''
-            })
+        ToDoAPI.updateTask(this.state.title, this.state.id).then((data) => {  
+            if (!data.errors) {
+                items.some((item, index) => {
+                    if (item.id == data.id) {
+                        items[index] = data
+                        return true
+                    }
+                    return false
+                })
+                this.setState({
+                    title: '',
+                    items: items,
+                    editDisabled: ''
+                })
+            } else {
+                this.setState({
+                    title: '',
+                    errors: data.errors.title[0]  
+                })
+            }
+            
         })
     }
 
     onEdit(itemid, e) {
         e.preventDefault()
         let data = [...this.state.items]
-        data.forEach((item,index) => {
-            if(item.id == itemid) {
+        data.forEach((item, index) => {
+            if (item.id == itemid) {
                 this.setState({
                     id: item.id,
                     title: item.title,
@@ -83,14 +100,16 @@ class List extends Component {
         e.preventDefault()
         ToDoAPI.deleteTask(val).then((data)=>{
             let items = [...this.state.items]
-            items.forEach((item,index) => {
-                if(item.id == data.id) {
-                    items.pop(data)
-                    this.setState({
-                        title: '',
-                        items: items
-                    })
+            items.some((item, index) => {
+                if (item.id == data.id) {
+                    items.splice(index, 1)
+                    return true
                 }
+                return false
+            })
+            this.setState({
+                title: '',
+                items: items
             })
         })
     }
@@ -102,13 +121,14 @@ class List extends Component {
                     <div className="form-group">
                         <label htmlFor="title">Title</label>
                         <div className="row">
-                            <div className="col-md-12">
+                            <div className="form-group col-md-12 has-error">
                                 <input type="text" className="form-control" id="title"
                                     name="title" value={this.state.title || ''}
                                     onChange={this.onChange} 
                                 />
+                                 <label className="text-danger">{this.state.errors}</label>
                             </div>
-                        </div>
+                        </div>   
                     </div>
                     {!this.state.editDisabled ? (
                         <button type="submit" 
@@ -163,5 +183,3 @@ class List extends Component {
         )
     }
 }
-
-export default List

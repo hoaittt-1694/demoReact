@@ -1,8 +1,7 @@
 import React, {Component} from 'react';
-import ReactDOM from 'react-dom';
 import List from './List';
 
-class App extends Component {
+export default class App extends Component {
     render() {
         return (
             <div className="container">
@@ -15,8 +14,4 @@ class App extends Component {
             </div>
         );
     }
-}
-
-if (document.getElementById('todoApp')) {
-    ReactDOM.render(<App />, document.getElementById('todoApp'));
 }
