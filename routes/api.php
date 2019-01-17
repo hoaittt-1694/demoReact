@@ -14,11 +14,17 @@ use Illuminate\Http\Request;
 */
 Route::resource('tasks', 'TaskController');
 
-Route::group(['namespace' => 'Api'], function () {
-    Route::post('user/register', 'UsersController@register');
 
-    Route::group(['middleware' => ['api']], function () {
-        Route::put('user/me', 'UsersController@updateProfile');
-        Route::get('user/me', 'UsersController@getCurrentUser');
+
+
+
+
+Route::group(['namespace' => 'Api'], function () {
+    Route::group(['middleware' => ['jwt.verify']], function() {
+        Route::get('closed', 'DataController@closed');
+        Route::get('user', 'UsersController@getAuthenticatedUser');
     });
+    Route::post('register', 'UsersController@register');
+    Route::post('login', 'UsersController@authenticate');
+    Route::get('open', 'DataController@open');
 });
