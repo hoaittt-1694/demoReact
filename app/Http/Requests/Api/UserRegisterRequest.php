@@ -12,7 +12,7 @@ class UserRegisterRequest extends BaseRequest
     public function rules()
     {
         return [
-            'password' => 'required|min:6',
+            'password' => 'required|confirmed|min:6',
             'email' => 'required|email|unique:users',
             'name' => 'max:20',
         ];
@@ -21,7 +21,13 @@ class UserRegisterRequest extends BaseRequest
     public function messages()
     {
         return array_merge(parent::messages(), [
-            'unique' => config('code.user.email_exists'),
+            'password.required' => __('users.password.required'),
+            'password.min' => __('users.password.min'),
+            'password.confirmed' => __('users.password.confirmed'),
+            'email.required' => __('users.email.required'),
+            'email.unique' => __('users.email.unique'),
+            'email.email' => __('users.email.email'),
+            'name.max' => __('users.name.max'),
         ]);
     }
 }

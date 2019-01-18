@@ -12,14 +12,10 @@ use Illuminate\Http\Request;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-Route::resource('tasks', 'TaskController');
-
-
-
-
-
 
 Route::group(['namespace' => 'Api'], function () {
+    Route::resource('tasks', 'TaskController');
+
     Route::group(['middleware' => ['jwt.verify']], function() {
         Route::get('closed', 'DataController@closed');
         Route::get('user', 'UsersController@getAuthenticatedUser');

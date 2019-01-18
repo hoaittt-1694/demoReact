@@ -2,8 +2,18 @@
 
 namespace App\Http\Requests\Api;
 
-class UserUpdateRequest extends BaseRequest
+class UserLoginRequest extends BaseRequest
 {
+    /**
+     * Determine if the user is authorized to make this request.
+     *
+     * @return bool
+     */
+    public function authorize()
+    {
+        return true;
+    }
+
     /**
      * Get the validation rules that apply to the request.
      *
@@ -12,7 +22,8 @@ class UserUpdateRequest extends BaseRequest
     public function rules()
     {
         return [
-            'name' => 'max:20',
+            'password' => 'required|min:6',
+            'email' => 'required',
         ];
     }
 

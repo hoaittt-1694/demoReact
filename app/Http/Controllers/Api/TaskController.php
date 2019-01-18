@@ -1,13 +1,12 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
-use Illuminate\Http\Request;
 use App\Models\Task;
 use App\Http\Requests\StoreTaskRequest;
 use App\Http\Requests\UpdateTaskRequest;
 
-class TaskController extends Controller
+class TaskController extends BaseController
 {
     public function index()
     {
@@ -34,7 +33,7 @@ class TaskController extends Controller
         return response()->json($task);
     }
 
-    public function destroy(Request $request, $id)
+    public function destroy($id)
     {
         $task = Task::findOrFail($id);
         $task->delete();
