@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import * as ToDoAPI from '../api/ToDo';
+import React, { Component } from 'react'
+import * as ToDoAPI from '../api/ToDo'
 
 export default class List extends Component {
     constructor() {
@@ -61,7 +61,7 @@ export default class List extends Component {
         ToDoAPI.updateTask(this.state.title, this.state.id).then((data) => {  
             if (!data.errors) {
                 items.some((item, index) => {
-                    if (item.id == data.id) {
+                    if (item.id === data.id) {
                         items[index] = data
                         return true
                     }
@@ -82,11 +82,11 @@ export default class List extends Component {
         })
     }
 
-    onEdit(itemid, e) {
+    onEdit(itemId, e) {
         e.preventDefault()
         let data = [...this.state.items]
-        data.forEach((item, index) => {
-            if (item.id == itemid) {
+        data.forEach((item) => {
+            if (item.id === itemId) {
                 this.setState({
                     id: item.id,
                     title: item.title,
@@ -101,7 +101,7 @@ export default class List extends Component {
         ToDoAPI.deleteTask(val).then((data)=>{
             let items = [...this.state.items]
             items.some((item, index) => {
-                if (item.id == data.id) {
+                if (item.id === data.id) {
                     items.splice(index, 1)
                     return true
                 }
@@ -133,7 +133,7 @@ export default class List extends Component {
                     {!this.state.editDisabled ? (
                         <button type="submit" 
                             className= "btn btn-success btn-block"
-                            onClick={this.onSubmit.bind(this)}>
+                            onClick={this.onSubmit}>
                             Submit
                         </button>
                     ) : (
@@ -155,7 +155,7 @@ export default class List extends Component {
                             <tr key={index}>
                                 <td className="text-left">{item.title}</td>
                                 <td className="text-right">
-                                <button href=""
+                                <button
                                     className="btn btn-info mr-1"
                                     disabled={this.state.editDisabled}
                                     onClick={this.onEdit.bind(
@@ -165,7 +165,7 @@ export default class List extends Component {
                                     Edit
                                 </button>
 
-                                <button href=""
+                                <button
                                     className="btn btn-danger mr-1"
                                     disabled={this.state.editDisabled}
                                     onClick={this.onDelete.bind(

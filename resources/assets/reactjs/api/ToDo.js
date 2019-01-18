@@ -10,14 +10,14 @@ export const getList = () => {
 
 export const addTask = title => {
     return axios
-        .post('/api/tasks' , {
+        .post('/api/tasks', {
             title: title
         })
         .then(response => {
             return response.data;
         })
         .catch(error => {
-            if (error.status == 422) {
+            if (error.status === 422) {
                 return error.data
             }
         })
@@ -32,7 +32,7 @@ export const updateTask = (title, id) => {
             return response.data
         })
         .catch(error => {
-            if (error.status == 422) {
+            if (error.status === 422) {
                 return error.data
             }
         })
