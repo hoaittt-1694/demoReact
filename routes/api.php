@@ -15,12 +15,13 @@ use Illuminate\Http\Request;
 
 Route::group(['namespace' => 'Api'], function () {
     Route::resource('tasks', 'TaskController');
+       
+    Route::post('register', 'UsersController@register');
+    Route::post('login', 'UsersController@login');
+    Route::get('profile', 'UsersController@getAuthenticatedUser');
 
     Route::group(['middleware' => ['jwt.verify']], function() {
         Route::get('closed', 'DataController@closed');
-        Route::get('user', 'UsersController@getAuthenticatedUser');
+        Route::get('open', 'DataController@open');
     });
-    Route::post('register', 'UsersController@register');
-    Route::post('login', 'UsersController@authenticate');
-    Route::get('open', 'DataController@open');
 });

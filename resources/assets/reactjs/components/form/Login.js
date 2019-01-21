@@ -3,90 +3,110 @@ import { Button, FormGroup, FormControl, ControlLabel } from "react-bootstrap"
 import * as Authentication from '../../api/Authentication'
 
 export default class Login extends Component {
-    constructor(props) {
-        super(props)
+    constructor() {
+        super()
         this.state = {
             email: "",
+            emailError: "",
             password: "",
-            error: ""
+            emailError: "",
+            error: {}
         }
 
-        this.handlePassChange = this.handlePassChange.bind(this)
-        this.handleUserChange = this.handleUserChange.bind(this)
-        this.handleSubmit = this.handleSubmit.bind(this)
-        this.dismissError = this.dismissError.bind(this)
-    }
-
-    dismissError() {
-        this.setState({ error: '' })
+        this.onChange = this.onChange.bind(this)
+        this.onSubmit = this.onSubmit.bind(this)
     }
 
     validateForm() {
         return this.state.email.length > 0 && this.state.password.length > 0
     }
 
-    handleUserChange(event) {
-        this.setState({
-            email: event.target.value,
-        });
-    };
+    validate = () => {
+        let isError = false
+        const errors = {
+            emailError: "",
+            passwordError: "",
+        };
+        if (this.state.email.length > 255) {
+            isError = true;
+            errors.nameError = "Username so long";
+        }
 
-    handlePassChange(event) {
-        this.setState({
-            password: event.target.value,
-        });
+        if (this.state.password.length < 6) {
+            isError = true;
+            errors.nameError = "Password needs to be atleast 6 characters long";
+        }
+
+        if (this.state.email.indexOf("@") === -1) {
+            isError = true;
+            errors.emailError = "Requires valid email";
+        }
+
+        if (isError) {
+            this.setState({
+                ...this.state,
+                ...errors
+            })
+        }
+        
+        return isError;
     }
 
-    handleSubmit(event) {
-        event.preventDefault()
-        const user = {
-            email: this.state.email,
-            password: this.state.password,
-        }
-        Authentication.loginUser(user).then((data) => {
-            if (!data.error) {
-                this.props.history.push("/");
-                const AUTH_TOKEN = localStorage.getItem(data)
-            } else {
-                console.log(data.error)
-                this.setState({
-                    error: data
-                })
-            }
-
+    onChange(event) {
+        this.setState({
+            [event.target.name]: event.target.value
         })
+    }
+
+    onSubmit(event) {
+        event.preventDefault()
+        const err = this.validate();
+        if (!err) {
+            const user = {
+                email: this.state.email,
+                password: this.state.password,
+            }
+            Authentication.loginUser(user).then((res) => {
+                if (res) {
+                    this.props.history.push(`/profile`)
+                }
+    
+            })
+        }
     }
 
     render() {
         return (
-            <div className="Login">
-                <form onSubmit={this.handleSubmit}>
+            <div className="Login container">
+                <form onSubmit={this.onSubmit}>
                     <FormGroup controlId="email" bsSize="large">
-                        {
-                            this.state.error &&
-                            <h3 data-test="error" onClick={this.dismissError}>
-                                <button onClick={this.dismissError}>✖</button>
-                                {this.state.error}
-                            </h3>
-                        }
                         <ControlLabel>Email</ControlLabel>
                         <FormControl
                             autoFocus
+                            autoComplete="off"
                             type="email"
+                            name="email"
+                            placeholder="Enter Email"
                             value={this.state.email}
-                            onChange={this.handleUserChange}
+                            onChange={this.onChange}
+                            errorText={this.state.emailError}
                         />
                     </FormGroup>
                     <FormGroup controlId="password" bsSize="large">
                         <ControlLabel>Password</ControlLabel>
                         <FormControl
-                            value={this.state.password}
-                            onChange={this.handlePassChange}
+                            autoFocus
+                            autoComplete="off"
+                            name="password"
                             type="password"
+                            placeholder="Enter Password"
+                            value={this.state.password}
+                            onChange={this.onChange}
+                            errorText={this.state.passwordError}
                         />
                     </FormGroup>
                     <Button
-                        className= "btn btn-success btn-block"
+                        className= "btn btn-lg btn-success btn-block"
                         bsSize="large"
                         disabled={!this.validateForm()}
                         type="submit"

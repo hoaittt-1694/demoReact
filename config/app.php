@@ -181,11 +181,10 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
         App\Providers\ServicesBindingProvider::class,
-
+        Tymon\JWTAuth\Providers\LaravelServiceProvider::class,
         /*
          * Custom Service Provider
          */
-        Tymon\JWTAuth\Providers\LaravelServiceProvider::class,
         Collective\Html\HtmlServiceProvider::class,
     ],
 
