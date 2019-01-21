@@ -6,18 +6,16 @@ export const registerUser = (user) => {
             return response.data
         })
         .catch(error => {
-            if (error.status === 422) {
-                return error.data
-            }
+            return error
         })
 }
 
 export const loginUser = (user) => {
-    axios.post('/api/login', user)
+    return axios.post('/api/login', user)
         .then(response => {
             return response.data
         })
         .catch(error => {
-            return error
+            return error.data
         })
 }

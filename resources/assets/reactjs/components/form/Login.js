@@ -46,12 +46,14 @@ export default class Login extends Component {
         Authentication.loginUser(user).then((data) => {
             if (!data.error) {
                 this.props.history.push("/");
+                const AUTH_TOKEN = localStorage.getItem(data)
             } else {
+                console.log(data.error)
                 this.setState({
-                    error: data.error
+                    error: data
                 })
-                console.log(this.state.error)
             }
+
         })
     }
 

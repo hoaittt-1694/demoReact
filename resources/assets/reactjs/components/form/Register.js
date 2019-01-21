@@ -42,13 +42,10 @@ export default class Register extends Component {
         }
 
         Authentication.registerUser(user).then((data) => {
-            console.log(data)
-            if (!data.errors) {
-                this.props.history.push("/login");
+            if (data.status !== 400) {
+                this.props.history.push("/login")
             } else {
-                this.setState({
-                    errors: data.errors.title[0]
-                })
+               console.log(data)
             }
         })
     }
