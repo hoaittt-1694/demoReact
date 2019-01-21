@@ -1,6 +1,5 @@
 @extends('layouts.default')
 
 @section('content')
-    {{--<div id="todoApp"></div>--}}
-    <div id="loginForm"></div>
+    <div id="todoApp"></div>
 @stop
