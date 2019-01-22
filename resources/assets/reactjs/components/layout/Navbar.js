@@ -1,16 +1,24 @@
 import React, { Component } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, withRouter } from 'react-router-dom'
 
 class Navbar extends Component {
+    constructor(props) {
+        super(props)
+        this.logOut = this.logOut.bind(this)
+    }
+
     logOut(event) {
         event.preventDefault()
         localStorage.removeItem('usertoken')
-        this.props.history.push(`/`)
+        this.props.history.push(`/login`)
     }
 
     render() {
         const loginRegLink = (
             <ul className="navbar-nav">
+                <li className="nav-item">
+                    <Link to="/" className="nav-link">Home</Link>
+                </li>
                 <li className="nav-item">
                     <Link to="/login" className="nav-link">
                         Login
@@ -27,14 +35,17 @@ class Navbar extends Component {
         const userLink = (
             <ul className="navbar-nav">
                 <li className="nav-item">
+                    <Link to="/home" className="nav-link">Home</Link>
+                </li>
+                <li className="nav-item">
                     <Link to="/profile" className="nav-link">
                         Profile
                     </Link>
                 </li>
                 <li className="nav-item">
-                    <a href="/" onClick={this.logOut.bind(this)} className="nav-link">
+                    <Link to="/login" onClick={this.logOut} className="nav-link">
                         Logout
-                    </a>
+                    </Link>
                 </li>
             </ul>
         )
@@ -51,12 +62,7 @@ class Navbar extends Component {
                     <span className="navbar-toggle-icon"></span>
                 </button>
 
-                <div id="navbar1" className="collapse navbar-collapse justify-content-md-center">
-                    <ul className="navbar-nav">
-                        <li className="nav-item">
-                            <Link to="/" className="nav-link">Home</Link>
-                        </li>
-                    </ul>
+                <div id="navbar1" className="collapse navbar-collapse justify-content-md-right">
                     {localStorage.usertoken ? userLink : loginRegLink}
                 </div>
             </nav>

@@ -3,17 +3,14 @@ import { Button, FormGroup, FormControl, ControlLabel } from "react-bootstrap"
 import * as Authentication from '../../api/Authentication'
 
 export default class Register extends Component {
-    constructor() {
-        super()
+    constructor(props) {
+        super(props)
         this.state = {
             name: "",
-            nameError: "",
             email: "",
-            emailError: "",
             password: "",
-            passwordError: "",
             password_confirm: "",
-            password_confirmError: "",
+            errors: null,
         }
 
         this.onChange = this.onChange.bind(this)
@@ -21,63 +18,35 @@ export default class Register extends Component {
     }
 
     validateForm() {
-        return this.state.name.length > 0 && this.state.email.length > 0 && this.state.password.length > 0
+        return this.state.name.length > 0 && this.state.email.length > 0
+            && this.state.password.length > 0 && this.state.password_confirm.length > 0
     }
 
     onChange(event) {
         this.setState({
+            errors: null,
             [event.target.name]: event.target.value
         })
     }
 
-    validate = () => {
-        let isError = false
-        const errors = {
-            nameError: "",
-            emailError: "",
-            passwordError: "",
-            password_confirmError: ""
-        };
-        if (this.state.name.length > 255) {
-            isError = true;
-            errors.nameError = "Username so long";
-        }
-
-        if (this.state.password.length < 6) {
-            isError = true;
-            errors.nameError = "Password needs to be atleast 6 characters long";
-        }
-
-        if (this.state.email.indexOf("@") === -1) {
-            isError = true;
-            errors.emailError = "Requires valid email";
-        }
-
-        if (isError) {
-            this.setState({
-                ...this.state,
-                ...errors
-            })
-        }
-        
-        return isError;
-    }
-
     onSubmit(event) {
         event.preventDefault()
-        const err = this.validate();
-        if (!err) {
             const newUser = {
                 name: this.state.name,
                 email: this.state.email,
                 password: this.state.password,
                 password_confirm: this.state.password_confirm
             }
-    
+
             Authentication.registerUser(newUser).then((res) => {
-                this.props.history.push(`/login`)
+                if (res.token) {
+                    this.props.history.push(`/login`)
+                } else {
+                    this.setState({
+                        errors: res.data
+                    })
+                }
             })
-        }
     }
 
     render() {
@@ -87,7 +56,6 @@ export default class Register extends Component {
                     <FormGroup bsSize="large">
                         <ControlLabel>Username</ControlLabel>
                         <FormControl
-                            autoComplete="off"
                             id="name-input"
                             name="name"
                             className="center-block"
@@ -96,13 +64,16 @@ export default class Register extends Component {
                             type="text"
                             value={this.state.name}
                             onChange={this.onChange}
-                            errorText={this.state.nameError}
                         />
+                        {this.state.errors ? (
+                            <label className="text-danger">{this.state.errors.name}</label>
+                        ) : (
+                            ''
+                        )}
                     </FormGroup>
                     <FormGroup bsSize="large">
                         <ControlLabel>Email Address</ControlLabel>
                         <FormControl
-                            autoComplete="off"
                             id="email-input"
                             name="email"
                             className="center-block"
@@ -111,13 +82,16 @@ export default class Register extends Component {
                             type="email"
                             value={this.state.email}
                             onChange={this.onChange}
-                            errorText={this.state.emailError}
                         />
+                        {this.state.errors ? (
+                            <label className="text-danger">{this.state.errors.email}</label>
+                        ) : (
+                            ''
+                        )}
                     </FormGroup>
                     <FormGroup bsSize="large">
                         <ControlLabel>Password</ControlLabel>
                         <FormControl
-                            autoComplete="off"
                             id="password-input"
                             name="password"
                             type="password"
@@ -125,13 +99,16 @@ export default class Register extends Component {
                             placeholder="Enter Password"
                             value={this.state.password}
                             onChange={this.onChange}
-                            errorText={this.state.passwordError}
                         />
+                        {this.state.errors ? (
+                            <label className="text-danger">{this.state.errors.password}</label>
+                        ) : (
+                            ''
+                        )}
                     </FormGroup>
                     <FormGroup bsSize="large">
                         <ControlLabel>Password Confirm</ControlLabel>
                         <FormControl
-                            autoComplete="off"
                             id="password-confirm-input"
                             name="password_confirm"
                             type="password"
@@ -139,8 +116,12 @@ export default class Register extends Component {
                             placeholder="Confirm Password"
                             value={this.state.password_confirm}
                             onChange={this.onChange}
-                            errorText={this.state.password_confirmError}
                         />
+                        {this.state.errors ? (
+                            <label className="text-danger">{this.state.errors.password_confirm}</label>
+                        ) : (
+                            ''
+                        )}
                     </FormGroup>
                     <Button
                         className= "btn btn-success btn-block"

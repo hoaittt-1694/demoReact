@@ -33,6 +33,11 @@ class User extends Authenticatable implements JWTSubject
         'remember_token',
     ];
 
+    public function tasks()
+    {
+        return $this->hasMany(Task::class);
+    }
+
     public function hasDefinePrivilege($permission)
     {
         //TODO: check role

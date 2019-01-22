@@ -3,14 +3,12 @@ import { Button, FormGroup, FormControl, ControlLabel } from "react-bootstrap"
 import * as Authentication from '../../api/Authentication'
 
 export default class Login extends Component {
-    constructor() {
-        super()
+    constructor(props) {
+        super(props)
         this.state = {
             email: "",
-            emailError: "",
             password: "",
-            emailError: "",
-            error: {}
+            errors: null
         }
 
         this.onChange = this.onChange.bind(this)
@@ -21,58 +19,29 @@ export default class Login extends Component {
         return this.state.email.length > 0 && this.state.password.length > 0
     }
 
-    validate = () => {
-        let isError = false
-        const errors = {
-            emailError: "",
-            passwordError: "",
-        };
-        if (this.state.email.length > 255) {
-            isError = true;
-            errors.nameError = "Username so long";
-        }
-
-        if (this.state.password.length < 6) {
-            isError = true;
-            errors.nameError = "Password needs to be atleast 6 characters long";
-        }
-
-        if (this.state.email.indexOf("@") === -1) {
-            isError = true;
-            errors.emailError = "Requires valid email";
-        }
-
-        if (isError) {
-            this.setState({
-                ...this.state,
-                ...errors
-            })
-        }
-        
-        return isError;
-    }
-
     onChange(event) {
         this.setState({
+            errors: null,
             [event.target.name]: event.target.value
         })
     }
 
     onSubmit(event) {
         event.preventDefault()
-        const err = this.validate();
-        if (!err) {
-            const user = {
-                email: this.state.email,
-                password: this.state.password,
-            }
-            Authentication.loginUser(user).then((res) => {
-                if (res) {
-                    this.props.history.push(`/profile`)
-                }
-    
-            })
+        const user = {
+            email: this.state.email,
+            password: this.state.password,
         }
+
+        Authentication.loginUser(user).then((res) => {
+            if (res.token) {
+                this.props.history.push(`/home`)
+            } else {
+                this.setState({
+                    errors: res.data
+                })
+            }
+        })
     }
 
     render() {
@@ -83,27 +52,33 @@ export default class Login extends Component {
                         <ControlLabel>Email</ControlLabel>
                         <FormControl
                             autoFocus
-                            autoComplete="off"
                             type="email"
                             name="email"
                             placeholder="Enter Email"
                             value={this.state.email}
                             onChange={this.onChange}
-                            errorText={this.state.emailError}
                         />
+                        {this.state.errors ? (
+                            <label className="text-danger">{this.state.errors.email}</label>
+                        ) : (
+                            ''
+                        )}
                     </FormGroup>
                     <FormGroup controlId="password" bsSize="large">
                         <ControlLabel>Password</ControlLabel>
                         <FormControl
                             autoFocus
-                            autoComplete="off"
                             name="password"
                             type="password"
                             placeholder="Enter Password"
                             value={this.state.password}
                             onChange={this.onChange}
-                            errorText={this.state.passwordError}
                         />
+                        {this.state.errors ? (
+                            <label className="text-danger">{this.state.errors.password}</label>
+                        ) : (
+                            ''
+                        )}
                     </FormGroup>
                     <Button
                         className= "btn btn-lg btn-success btn-block"

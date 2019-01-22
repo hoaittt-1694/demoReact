@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import * as Authentication from '../../api/Authentication'
 import { getProfile } from '../api/Authentication';
 
 class Profile extends Component {

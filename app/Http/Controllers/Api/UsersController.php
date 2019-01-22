@@ -10,10 +10,6 @@ use Tymon\JWTAuth\Exceptions\TokenExpiredException;
 use Tymon\JWTAuth\Exceptions\TokenInvalidException;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Tymon\JWTAuth\Facades\JWTAuth;
-use Tymon\JWTAuth\Facades\JWTFactory;
-use Tymon\JWTAuth\Contracts\JWTSubject;
-use Tymon\JWTAuth\PayloadFactory;
-use Tymon\JWTAuth\JWTManager as JWT;
 
 class UsersController extends BaseController
 {
@@ -26,8 +22,8 @@ class UsersController extends BaseController
             'password_confirm' => ['required_with:password', 'same:password', 'min:6']
         ]);
 
-        if($validator->fails()){
-            return response()->json($validator->errors()->toJson(), 400);
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 400);
         }
 
         $user = User::create([
@@ -35,7 +31,6 @@ class UsersController extends BaseController
             'email' => $request->get('email'),
             'password' => Hash::make($request->get('password')),
         ]);
-
         $token = JWTAuth::fromUser($user);
 
         return response()->json(compact('user', 'token'), 201);

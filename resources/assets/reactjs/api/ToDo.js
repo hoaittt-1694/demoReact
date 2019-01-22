@@ -2,7 +2,9 @@ import axios from 'axios'
 
 export const getList = () => {
     return axios
-        .get('/api/tasks')
+        .get('/api/tasks', {
+            headers: { Authorization: `Bearer ${localStorage.usertoken}`}
+        })
         .then(response => {
             return response.data
         })
@@ -12,6 +14,8 @@ export const addTask = title => {
     return axios
         .post('/api/tasks', {
             title: title
+        }, {
+            headers: { Authorization: `Bearer ${localStorage.usertoken}`}
         })
         .then(response => {
             return response.data;
@@ -27,6 +31,8 @@ export const updateTask = (title, id) => {
     return axios
         .put(`/api/tasks/${id}`, {
             title: title
+        }, {
+            headers: { Authorization: `Bearer ${localStorage.usertoken}`}
         })
         .then(response => {
             return response.data
@@ -40,11 +46,13 @@ export const updateTask = (title, id) => {
 
 export const deleteTask = id => {
     return axios
-        .delete(`/api/tasks/${id}`)
+        .delete(`/api/tasks/${id}`, {
+            headers: { Authorization: `Bearer ${localStorage.usertoken}`}
+        })
         .then(response => {
             return response.data
         })
         .catch(error => {
-            console.log(error)
+            return error
         })
 }
