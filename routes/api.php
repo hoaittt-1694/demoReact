@@ -21,7 +21,5 @@ Route::group(['namespace' => 'Api'], function () {
 
     Route::group(['middleware' => ['jwt-auth']], function() {
         Route::resource('tasks', 'TaskController');
-        Route::get('closed', 'DataController@closed');
-        Route::get('open', 'DataController@open');
     });
 });
