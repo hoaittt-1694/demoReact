@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { Link, withRouter } from 'react-router-dom'
+import Auth from '../../service/Auth'
 
 class Navbar extends Component {
     constructor(props) {
@@ -9,7 +10,7 @@ class Navbar extends Component {
 
     logOut(event) {
         event.preventDefault()
-        localStorage.removeItem('usertoken')
+        Auth.deleteAuthenticateUser()
         this.props.history.push(`/login`)
     }
 
@@ -63,7 +64,7 @@ class Navbar extends Component {
                 </button>
 
                 <div id="navbar1" className="collapse navbar-collapse justify-content-md-right">
-                    {localStorage.usertoken ? userLink : loginRegLink}
+                    {Auth.isUserAuthenticated() ? userLink : loginRegLink}
                 </div>
             </nav>
         )

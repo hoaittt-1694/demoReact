@@ -1,4 +1,5 @@
 import axios from 'axios'
+import Auth from '../service/Auth'
 
 export const registerUser = (user) => {
     return axios
@@ -19,7 +20,7 @@ export const loginUser = (user) => {
             headers: {'Content-Type': 'application/json'}
         })
         .then(response => {
-            localStorage.setItem('usertoken', response.data.token)
+            Auth.authenticateUser(response.data.token)
             return response.data
         })
         .catch(error => {
@@ -30,7 +31,7 @@ export const loginUser = (user) => {
 export const getProfile = () => {
     return axios
         .get('/api/profile', {
-            headers: { Authorization: `Bearer ${localStorage.usertoken}`}
+            headers: { Authorization: `Bearer ${Auth.getToken()}`}
         })
         .then(response => {
             return response.data
