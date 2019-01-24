@@ -22,8 +22,8 @@ class UserLoginRequest extends BaseRequest
     public function rules()
     {
         return [
-            'password' => 'required|min:6',
-            'email' => 'required',
+            'email' => ['required', 'string', 'email'],
+            'password' => ['required', 'string', 'min:6'],
         ];
     }
 

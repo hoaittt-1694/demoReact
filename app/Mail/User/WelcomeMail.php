@@ -3,12 +3,8 @@
 namespace App\Mail\User;
 
 use App\Mail\BaseMail;
-use App\Services\Helpers\EmailService;
 use Illuminate\Bus\Queueable;
-use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Support\Facades\View;
 
 class WelcomeMail extends BaseMail
 {

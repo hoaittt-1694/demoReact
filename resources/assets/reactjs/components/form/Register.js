@@ -1,16 +1,14 @@
 import React, { Component } from "react"
-import { Button, FormGroup, FormControl, ControlLabel } from "react-bootstrap"
+import { Button, FormGroup, FormControl, ControlLabel, Alert } from "react-bootstrap"
 import * as Authentication from '../../api/Authentication'
 
 export default class Register extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            name: "",
             email: "",
-            password: "",
-            password_confirm: "",
-            errors: null,
+            notificationMessage: "",
+            notificationType: "",
         }
 
         this.onChange = this.onChange.bind(this)
@@ -39,11 +37,19 @@ export default class Register extends Component {
             }
 
             Authentication.registerUser(newUser).then((res) => {
-                if (res.token) {
-                    this.props.history.push(`/login`)
+                if (res.user) {
+                    this.setState({
+                        email: "",
+                        password: "",
+                        password_confirm: "",
+                        notification: "Register success! Please check your email to activate your account",
+                        notificationType: "success"
+                    })
                 } else {
                     this.setState({
-                        errors: res.data
+                        errors: res.errors,
+                        notification: "Register user fail",
+                        notificationType: "danger"
                     })
                 }
             })
@@ -52,6 +58,14 @@ export default class Register extends Component {
     render() {
         return (
             <div className="Register">
+                {this.state.notification ? (
+                    <Alert  bsStyle={this.state.notificationType}>
+                        <label>{this.state.notification}</label>
+                    </Alert>
+                ) : (
+                    ''
+                )}
+
                 <form onSubmit={this.onSubmit}>
                     <FormGroup bsSize="large">
                         <ControlLabel>Username</ControlLabel>

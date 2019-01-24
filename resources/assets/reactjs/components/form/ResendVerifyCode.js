@@ -2,12 +2,11 @@ import React, { Component } from "react"
 import { Button, FormGroup, FormControl, ControlLabel } from "react-bootstrap"
 import * as Authentication from '../../api/Authentication'
 
-export default class Login extends Component {
+export default class ResendVerifyCode extends Component {
     constructor(props) {
         super(props)
         this.state = {
             email: "",
-            password: "",
             errors: null
         }
 
@@ -16,7 +15,7 @@ export default class Login extends Component {
     }
 
     validateForm() {
-        return this.state.email.length > 0 && this.state.password.length > 0
+        return this.state.email.length > 0
     }
 
     onChange(event) {
@@ -30,27 +29,17 @@ export default class Login extends Component {
         event.preventDefault()
         const user = {
             email: this.state.email,
-            password: this.state.password,
         }
 
-        Authentication.loginUser(user).then((res) => {
-            if (res.token) {
-                this.props.history.push(`/home`)
-            } else {
-                if(res.error == 'email_not_activated') {
-                    //baoloi
-                } else {
-                    this.setState({
-                        errors: res.errors
-                    })
-                }
-            }
+        Authentication.resendVerifyCode(user).then((res) => {
+            //check send success or fail, notify.
         })
     }
 
     render() {
         return (
             <div className="Login container">
+                Please check mail or enter your email to resend active code.
                 <form onSubmit={this.onSubmit}>
                     <FormGroup controlId="email" bsSize="large">
                         <ControlLabel>Email</ControlLabel>
@@ -64,22 +53,6 @@ export default class Login extends Component {
                         />
                         {this.state.errors ? (
                             <label className="text-danger">{this.state.errors.email}</label>
-                        ) : (
-                            ''
-                        )}
-                    </FormGroup>
-                    <FormGroup controlId="password" bsSize="large">
-                        <ControlLabel>Password</ControlLabel>
-                        <FormControl
-                            autoFocus
-                            name="password"
-                            type="password"
-                            placeholder="Enter Password"
-                            value={this.state.password}
-                            onChange={this.onChange}
-                        />
-                        {this.state.errors ? (
-                            <label className="text-danger">{this.state.errors.password}</label>
                         ) : (
                             ''
                         )}

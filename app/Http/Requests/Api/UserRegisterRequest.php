@@ -5,6 +5,16 @@ namespace App\Http\Requests\Api;
 class UserRegisterRequest extends BaseRequest
 {
     /**
+     * Determine if the user is authorized to make this request.
+     *
+     * @return bool
+     */
+    public function authorize()
+    {
+        return true;
+    }
+
+    /**
      * Get the validation rules that apply to the request.
      *
      * @return array
@@ -12,22 +22,10 @@ class UserRegisterRequest extends BaseRequest
     public function rules()
     {
         return [
-            'password' => 'required|confirmed|min:6',
-            'email' => 'required|email|unique:users',
-            'name' => 'max:20',
+            'name' => ['required', 'string', 'max:255', 'min:3'],
+            'email' => ['required', 'string', 'email', 'max:255','unique:users'],
+            'password' => ['required', 'string', 'min:6'],
+            'password_confirm' => ['required_with:password', 'same:password', 'min:6']
         ];
-    }
-
-    public function messages()
-    {
-        return array_merge(parent::messages(), [
-            'password.required' => __('users.password.required'),
-            'password.min' => __('users.password.min'),
-            'password.confirmed' => __('users.password.confirmed'),
-            'email.required' => __('users.email.required'),
-            'email.unique' => __('users.email.unique'),
-            'email.email' => __('users.email.email'),
-            'name.max' => __('users.name.max'),
-        ]);
     }
 }

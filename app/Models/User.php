@@ -3,11 +3,12 @@
 namespace App\Models;
 
 use App\Models\Traits\ApiScopes;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
-class User extends Authenticatable implements JWTSubject
+class User extends Authenticatable implements JWTSubject, MustVerifyEmail
 {
     use Notifiable;
     use ApiScopes;
@@ -21,6 +22,9 @@ class User extends Authenticatable implements JWTSubject
         'name',
         'email',
         'password',
+        'is_active',
+        'active_token',
+        'active_token_expire'
     ];
 
     /**
@@ -31,6 +35,10 @@ class User extends Authenticatable implements JWTSubject
     protected $hidden = [
         'password',
         'remember_token',
+    ];
+
+    protected $dates = [
+        'active_token_expire',
     ];
 
     public function tasks()

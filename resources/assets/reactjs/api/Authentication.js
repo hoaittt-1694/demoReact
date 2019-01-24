@@ -10,7 +10,7 @@ export const registerUser = (user) => {
             return response.data
         })
         .catch(error => {
-            return error
+            return error.data
         })
 }
 
@@ -24,7 +24,7 @@ export const loginUser = (user) => {
             return response.data
         })
         .catch(error => {
-            return error
+            return error.data
         })
 }
 
@@ -38,5 +38,18 @@ export const getProfile = () => {
         })
         .catch(error => {
             return error
+        })
+}
+
+export const resendVerifyCode = (user) => {
+    return axios
+        .post('user/activation', user.email, {
+            headers: {'Content-Type': 'application/json'}
+        })
+        .then(response => {
+            return response.data
+        })
+        .catch(error => {
+            return error.data
         })
 }
