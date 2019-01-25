@@ -10,7 +10,6 @@ use App\Mail\BaseMail;
 class ActivationAccount extends BaseMail
 {
     use Queueable, SerializesModels;
-    public $name;
 
     protected $viewName = 'user.activation_account';
 
@@ -21,7 +20,7 @@ class ActivationAccount extends BaseMail
      */
     public function __construct($user)
     {
-        $verifyUrl = action([UsersController::class, 'verifyUser'], ['email' => $user->email, 'active_token' => $user->active_token]);
+        $verifyUrl = action([UsersController::class, 'verifyCode'], ['email' => $user->email, 'active_token' => $user->active_token]);
         $this->data = ['user' => $user, 'verifyUrl' => $verifyUrl];
         parent::__construct();
     }

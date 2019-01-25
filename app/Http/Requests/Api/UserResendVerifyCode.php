@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests\Api;
 
-class UserLoginRequest extends BaseRequest
+use Illuminate\Foundation\Http\FormRequest;
+
+class UserResendVerifyCode extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,13 +24,7 @@ class UserLoginRequest extends BaseRequest
     public function rules()
     {
         return [
-            'email' => ['required', 'string', 'email', 'exists:users'],
-            'password' => ['required', 'string', 'min:6'],
+            'email' => ['required', 'string', 'email']
         ];
-    }
-
-    public function messages()
-    {
-        return array_merge(parent::messages(), []);
     }
 }

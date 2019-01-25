@@ -28,9 +28,10 @@ export const loginUser = (user) => {
         })
 }
 
-export const getProfile = () => {
+export const updateProfile = (name) => {
+    const postData = {name}
     return axios
-        .get('/api/profile', {
+        .put('/api/profile', postData, {
             headers: { Authorization: `Bearer ${Auth.getToken()}`}
         })
         .then(response => {
@@ -41,12 +42,15 @@ export const getProfile = () => {
         })
 }
 
-export const resendVerifyCode = (user) => {
+export const resendVerifyCode = (email) => {
+    const postData = {email}
     return axios
-        .post('user/activation', user.email, {
+        .post('api/user/activation', postData, {
             headers: {'Content-Type': 'application/json'}
         })
         .then(response => {
+            console.log(response);
+            // Auth.authenticateUser(response.data.token)
             return response.data
         })
         .catch(error => {

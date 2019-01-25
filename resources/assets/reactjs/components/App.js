@@ -7,6 +7,7 @@ import Navbar from "./layout/Navbar"
 import Landing from "./layout/Landing"
 import Profile from "./Profile"
 import ResendVerifyCode from "./form/ResendVerifyCode"
+import UserTokenActivationExpired from "./notify/UserTokenActivationExpired"
 
 class App extends Component {
     render() {
@@ -16,7 +17,8 @@ class App extends Component {
                     <Navbar />
                     <Route exact path="/" component={Landing} />
                     <div className="container">
-                        <Route exact path="/verify" component={ ResendVerifyCode }/>
+                        <Route exact path="/token-expired" component={ UserTokenActivationExpired }/>
+                        <Route exact path="/resend-verify" component={ ResendVerifyCode }/>
                         <Route exact path="/home" component={ List } />
                         <Route exact path="/register" component={ Register } />
                         <Route exact path="/login" component={ Login } />

@@ -12,7 +12,7 @@ class UserUpdateRequest extends BaseRequest
     public function rules()
     {
         return [
-            'name' => 'max:20',
+            'name' => ['required', 'string', 'max:255', 'min:3'],
         ];
     }
 

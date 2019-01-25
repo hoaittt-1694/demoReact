@@ -38,6 +38,7 @@ export default class List extends Component {
     onSubmit(e) {
         e.preventDefault()
         ToDoAPI.addTask(this.state.title).then((data) => {
+            console.log(data);
             if (!data.errors) {
                 let items = [...this.state.items]
                 items.push(data)
@@ -48,7 +49,7 @@ export default class List extends Component {
             } else {
                 this.setState({
                     title: '',
-                    errors: data.errors.title[0]  
+                    errors: data.errors.title[0]  ? data.errors.title[0] : data.status
                 })
             }
            

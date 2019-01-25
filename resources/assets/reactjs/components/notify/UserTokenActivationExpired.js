@@ -2,12 +2,12 @@ import React, { Component } from "react"
 import {Button, FormGroup, FormControl, ControlLabel, Alert} from "react-bootstrap"
 import * as Authentication from '../../api/Authentication'
 
-export default class ResendVerifyCode extends Component {
+export default class UserTokenActivationExpired extends Component {
     constructor(props) {
         super(props)
         this.state = {
             email: "",
-            title: "Please check mail or enter your email to resend active code.",
+            title: "Token activation expired. Please Enter your email to resend active code.",
             errors: null,
             notificationMessage: "",
             notificationType: "",
@@ -31,16 +31,19 @@ export default class ResendVerifyCode extends Component {
     onSubmit(event) {
         event.preventDefault()
         Authentication.resendVerifyCode(this.state.email).then((res) => {
-           if (res.code === 200) {
-               this.setState({
-                   email: "",
-                   title: "",
-                   notification: "Resend verify code success! Please check your email to activate your account",
-                   notificationType: "success"
-               })
-           } else {
-               //
-           }
+            console.log(res)
+            if (!res.error) {
+                this.setState({
+                    email: "",
+                    title: "",
+                    notification: "Resend verify code success! Please check your email to activate your account",
+                    notificationType: "success"
+                })
+            } else {
+                this.setState({
+                    errors: res.error
+                })
+            }
         })
     }
 
@@ -67,7 +70,7 @@ export default class ResendVerifyCode extends Component {
                             onChange={this.onChange}
                         />
                         {this.state.errors ? (
-                            <label className="text-danger">{this.state.errors.email}</label>
+                            <label className="text-danger">{this.state.errors}</label>
                         ) : (
                             ''
                         )}

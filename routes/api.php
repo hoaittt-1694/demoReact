@@ -19,9 +19,9 @@ Route::group(['namespace' => 'Api'], function () {
     Route::get('user/activation/{email}/{active_token}', 'UsersController@verifyCode');
     Route::post('user/activation', 'UsersController@resendVerifyCode');
 
-    Route::get('profile', 'UsersController@getAuthenticatedUser')->middleware('verified');
-
     Route::group(['middleware' => ['jwt-auth']], function() {
         Route::resource('tasks', 'TaskController');
+        Route::put('profile', 'UsersController@updateProfile');
+        Route::get('profile', 'UsersController@getProfile');
     });
 });
