@@ -28,6 +28,20 @@ export const loginUser = (user) => {
         })
 }
 
+export const getProfile = () => {
+    let self = this;
+    return axios
+        .get('/api/profile', {
+            headers: { Authorization: `Bearer ${Auth.getToken()}`}
+        })
+        .then(response => {
+            return response.data
+        })
+        .catch(error => {
+            return error.data
+        })
+}
+
 export const updateProfile = (name) => {
     const postData = {name}
     return axios

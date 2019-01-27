@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import { updateProfile } from '../api/Authentication';
 import {Alert, Button, ControlLabel, FormControl, FormGroup} from "react-bootstrap";
 import * as Authentication from "../api/Authentication";
 
@@ -18,6 +17,15 @@ export default class Profile extends Component {
         this.onSubmit = this.onSubmit.bind(this)
     }
 
+    componentDidMount(){
+        Authentication.getProfile().then(res => {
+            this.setState({
+                name: res.user.name,
+                email: res.user.email
+            })
+        })
+    }
+
     validateForm() {
         return this.state.name.length > 0
     }
@@ -34,24 +42,15 @@ export default class Profile extends Component {
     onSubmit(event) {
         event.preventDefault()
 
-        Authentication.loginUser(this.state.name).then((res) => {
+        Authentication.updateProfile(this.state.name).then((res) => {
             console.log(res);
-            // if (res.user) {
-            //     this.props.history.push(`/home`)
-            // } else {
-            //     if(res.error === 'email_is_not_activated') {
-            //         this.props.history.push('/resend-verify')
-            //     } else if (res.error === 'invalid_credentials') {
-            //         this.setState({
-            //             notificationMessage: "Email or password invalid!",
-            //             notificationType: "danger",
-            //         })
-            //     } else {
-            //         this.setState({
-            //             errors: res.errors
-            //         })
-            //     }
-            // }
+            if (res.user) {
+                this.setState({
+                    name: res.user.name,
+                })
+            } else {
+               //
+            }
         })
     }
 
@@ -85,6 +84,7 @@ export default class Profile extends Component {
                         <FormGroup controlId="email" bsSize="large">
                             <ControlLabel>Email</ControlLabel>
                             <FormControl
+                                disabled
                                 autoFocus
                                 name="email"
                                 type="email"
@@ -103,7 +103,7 @@ export default class Profile extends Component {
                             disabled={!this.validateForm()}
                             type="submit"
                         >
-                            Update
+                            Edit
                         </Button>
                     </form>
                 </div>
