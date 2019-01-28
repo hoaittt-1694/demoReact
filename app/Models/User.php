@@ -46,6 +46,10 @@ class User extends Authenticatable implements JWTSubject, MustVerifyEmail
         return $this->hasMany(Task::class);
     }
 
+    public function setEmailAttribute($value) {
+        $this->attributes['email'] = strtolower($value);
+    }
+
     public function hasDefinePrivilege($permission)
     {
         //TODO: check role

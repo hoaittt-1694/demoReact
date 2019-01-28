@@ -11,29 +11,6 @@ class TaskPolicy
     use HandlesAuthorization;
 
     /**
-     * Determine whether the user can view the task.
-     *
-     * @param  \App\Models\User  $user
-     * @param  \App\Models\Task  $task
-     * @return mixed
-     */
-    public function view(User $user, Task $task)
-    {
-        return true;
-    }
-
-    /**
-     * Determine whether the user can create tasks.
-     *
-     * @param  \App\Models\User  $user
-     * @return mixed
-     */
-    public function create(User $user)
-    {
-        return $user->id > 0;
-    }
-
-    /**
      * Determine whether the user can update the task.
      *
      * @param  \App\Models\User  $user

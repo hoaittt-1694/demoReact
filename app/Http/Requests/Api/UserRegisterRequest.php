@@ -23,7 +23,7 @@ class UserRegisterRequest extends BaseRequest
     {
         return [
             'name' => ['required', 'string', 'max:255', 'min:3'],
-            'email' => ['required', 'string', 'email', 'max:255','unique:users'],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:6'],
             'password_confirm' => ['required_with:password', 'same:password', 'min:6']
         ];

@@ -8,7 +8,6 @@ import Landing from "./layout/Landing";
 import Profile from "./Profile";
 import ResendVerifyCode from "./form/ResendVerifyCode";
 import UserTokenActivationExpired from "./notify/UserTokenActivationExpired";
-import Auth from "../service/Auth";
 
 class App extends Component {
     render() {
@@ -22,8 +21,8 @@ class App extends Component {
                         <Route exact path="/resend-verify" component={ ResendVerifyCode }/>
                         <Route exact path="/register" component={ Register } />
                         <Route exact path="/login" component={ Login } />
-                        {Auth.isUserAuthenticated() ? <Route exact path="/home" component={ List } /> : <Route exact path="/home" component={Landing} />}
-                        {Auth.isUserAuthenticated() ? <Route exact path="/profile" component={ Profile } /> :  <Route exact path="/profile" component={Landing} />}
+                        <Route exact path="/home" component={ List } />
+                        <Route exact path="/profile" component={ Profile } />
                     </div>
                 </div>
             </Router>

@@ -38,7 +38,7 @@ export default class UserTokenActivationExpired extends Component {
             if (res.message === 're_email_activated') {
                 this.setState({
                     notificationMessage: "User has active, please login",
-                    notificationType: "waning"
+                    notificationType: "info"
                 })
             } else if (res.error === 'email_not_available') {
                 this.setState({

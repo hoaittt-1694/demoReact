@@ -22,7 +22,7 @@ class UserLoginRequest extends BaseRequest
     public function rules()
     {
         return [
-            'email' => ['required', 'string', 'email', 'exists:users'],
+            'email' => ['required', 'string', 'email'],
             'password' => ['required', 'string', 'min:6'],
         ];
     }

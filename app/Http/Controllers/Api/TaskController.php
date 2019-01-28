@@ -31,24 +31,18 @@ class TaskController extends BaseController
     public function update(UpdateTaskRequest $request, Task $task)
     {
         $user = Auth::user();
+        $user->can('update', $task);
+        $task->update($request->only(['title']));
 
-        if ($user->can('update', $task)) {
-            $task->update($request->only(['title']));
-            return response()->json($task);
-        } else {
-            return response()->json(['error' => 'You can only edit your own tasks.'], 403);
-        }
+        return response()->json($task);
     }
 
     public function destroy(Task $task)
     {
         $user = Auth::user();
+        $user->can('delete', $task);
+        $task->delete();
 
-        if ($user->can('delete', $task)) {
-            $task->delete();
-            return response()->json($task);
-        } else {
-            return response()->json(['error' => 'You can only delete your own tasks.'], 403);
-        }
+        return response()->json($task);
     }
 }

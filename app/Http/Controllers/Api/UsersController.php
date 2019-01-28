@@ -21,7 +21,7 @@ class UsersController extends BaseController
     {
         $user = User::create([
             'name' => $request->get('name'),
-            'email' => strtolower($request->get('email')),
+            'email' => $request->get('email'),
             'password' => Hash::make($request->get('password')),
             'active_token' => str_random(30),
             'active_token_expire' => Carbon::now()->addDay()
@@ -40,7 +40,7 @@ class UsersController extends BaseController
     {
         $credentialsRequest = $request->only('email', 'password');
         $credentials = [
-            'email' => strtolower($credentialsRequest['email']),
+            'email' => $credentialsRequest['email'],
             'password' => $credentialsRequest['password'],
         ];
 
@@ -112,7 +112,7 @@ class UsersController extends BaseController
     public function resendVerifyCode(Request $request)
     {
         $email = filter_var($request->input('email'), FILTER_VALIDATE_EMAIL);
-        $user = User::where('email', strtolower($email))->first();
+        $user = User::where('email', $email)->first();
 
         if (!$user) {
             return response()->json(['error' => 'email_not_available'], 403);
