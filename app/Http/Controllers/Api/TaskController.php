@@ -30,8 +30,7 @@ class TaskController extends BaseController
 
     public function update(UpdateTaskRequest $request, Task $task)
     {
-        $user = Auth::user();
-        $user->can('update', $task);
+        $this->authorize('update', $task);
         $task->update($request->only(['title']));
 
         return response()->json($task);
@@ -39,8 +38,7 @@ class TaskController extends BaseController
 
     public function destroy(Task $task)
     {
-        $user = Auth::user();
-        $user->can('delete', $task);
+        $this->authorize('delete', $task);
         $task->delete();
 
         return response()->json($task);

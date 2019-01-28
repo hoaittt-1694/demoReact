@@ -11,7 +11,6 @@ use Carbon\Carbon;
 use App\Services\Helpers\EmailService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
@@ -22,7 +21,7 @@ class UsersController extends BaseController
         $user = User::create([
             'name' => $request->get('name'),
             'email' => $request->get('email'),
-            'password' => Hash::make($request->get('password')),
+            'password' =>$request->get('password'),
             'active_token' => str_random(30),
             'active_token_expire' => Carbon::now()->addDay()
         ]);

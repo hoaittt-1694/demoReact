@@ -6,6 +6,7 @@ use App\Models\Traits\ApiScopes;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Support\Facades\Hash;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
 class User extends Authenticatable implements JWTSubject, MustVerifyEmail
@@ -46,8 +47,12 @@ class User extends Authenticatable implements JWTSubject, MustVerifyEmail
         return $this->hasMany(Task::class);
     }
 
-    public function setEmailAttribute($value) {
-        $this->attributes['email'] = strtolower($value);
+    public function setEmailAttribute($email) {
+        $this->attributes['email'] = strtolower($email);
+    }
+
+    public function setPasswordAttribute($password) {
+        $this->attributes['password'] = Hash::make($password);
     }
 
     public function hasDefinePrivilege($permission)
