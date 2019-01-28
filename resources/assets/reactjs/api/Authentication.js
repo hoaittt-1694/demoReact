@@ -55,6 +55,21 @@ export const updateProfile = (name) => {
         })
 };
 
+export const changePassword = (old_password, new_password, new_password_confirm) => {
+    const putData = {old_password, new_password, new_password_confirm};
+    return axios
+        .put('/api/change-password', putData, {
+            headers: { Authorization: `Bearer ${Auth.getToken()}`}
+        })
+        .then(response => {
+            console.log(response.data);
+            return response.data
+        })
+        .catch(error => {
+            return error.data
+        })
+};
+
 export const resendVerifyCode = (email) => {
     const postData = {email};
     return axios

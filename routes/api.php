@@ -23,5 +23,6 @@ Route::group(['namespace' => 'Api'], function () {
         Route::resource('tasks', 'TaskController');
         Route::put('profile', 'UsersController@updateProfile');
         Route::get('profile', 'UsersController@getProfile');
+        Route::put('change-password', 'UsersController@changePasswordUser');
     });
 });

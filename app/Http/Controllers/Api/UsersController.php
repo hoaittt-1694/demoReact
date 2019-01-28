@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Http\Requests\Api\UserChangePasswordRequest;
 use App\Http\Requests\Api\UserLoginRequest;
 use App\Http\Requests\Api\UserRegisterRequest;
 use App\Http\Requests\Api\UserUpdateRequest;
@@ -11,6 +12,7 @@ use Carbon\Carbon;
 use App\Services\Helpers\EmailService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
@@ -70,12 +72,34 @@ class UsersController extends BaseController
     {
         $name = $request->input('name');
         $user = Auth::user();
+
         $updated = $user->update([
             'name' => $name
         ]);
         if ($updated) {
             return response()->json(compact('user'));
         }
+        return response()->json(['error' => 'save fail']);
+    }
+
+    public function changePasswordUser(UserChangePasswordRequest $request) {
+        $oldPassword = Hash::make($request->input('old_password'));
+        $newPassword = $request->input('new_password');
+        $newPasswordConfirm = $request->input('new_password_confirm');
+
+        $user = Auth::User();
+        $currentPassword = $user->password;
+        $updated = false;
+        if(Hash::check($oldPassword, $currentPassword))
+        {
+            $updated = $user->update([
+                'password' => $newPassword
+            ]);
+        }
+        if ($updated) {
+            return response()->json(compact('user'));
+        }
+
         return response()->json(['error' => 'save fail']);
     }
 

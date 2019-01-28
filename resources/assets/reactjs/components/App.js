@@ -8,6 +8,7 @@ import Landing from "./layout/Landing";
 import Profile from "./Profile";
 import ResendVerifyCode from "./form/ResendVerifyCode";
 import UserTokenActivationExpired from "./notify/UserTokenActivationExpired";
+import ChangePasswordUser from "./ChangePasswordUser";
 
 class App extends Component {
     render() {
@@ -23,6 +24,7 @@ class App extends Component {
                         <Route exact path="/login" component={ Login } />
                         <Route exact path="/home" component={ List } />
                         <Route exact path="/profile" component={ Profile } />
+                        <Route exact path="/change-password" component={ ChangePasswordUser } />
                     </div>
                 </div>
             </Router>
