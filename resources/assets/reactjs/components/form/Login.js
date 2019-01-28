@@ -79,7 +79,7 @@ export default class Login extends Component {
                                 value={this.state.email}
                                 onChange={this.onChange}
                             />
-                            {this.state.errors ? (
+                            {this.state.errors && this.state.errors.email ? (
                                 <label className="text-danger">{this.state.errors.email}</label>
                             ) : (
                                 ''
@@ -95,7 +95,7 @@ export default class Login extends Component {
                                 value={this.state.password}
                                 onChange={this.onChange}
                             />
-                            {this.state.errors ? (
+                            {this.state.errors && this.state.errors.password ? (
                                 <label className="text-danger">{this.state.errors.password}</label>
                             ) : (
                                 ''

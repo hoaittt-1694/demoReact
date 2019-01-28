@@ -83,24 +83,20 @@ class UsersController extends BaseController
     }
 
     public function changePasswordUser(UserChangePasswordRequest $request) {
-        $oldPassword = Hash::make($request->input('old_password'));
+        $oldPassword = $request->input('old_password');
         $newPassword = $request->input('new_password');
         $newPasswordConfirm = $request->input('new_password_confirm');
 
         $user = Auth::User();
         $currentPassword = $user->password;
-        $updated = false;
-        if(Hash::check($oldPassword, $currentPassword))
-        {
-            $updated = $user->update([
-                'password' => $newPassword
-            ]);
+        if(Hash::check($oldPassword, $currentPassword)) {
+            $updated = $user->update(['password' => $newPassword]);
+            if ($updated) {
+                return response()->json(compact('user'));
+            }
         }
-        if ($updated) {
-            return response()->json(compact('user'));
-        }
-
-        return response()->json(['error' => 'save fail']);
+        
+        return response()->json(['errors' => ['old_password' => 'The old password is not correct']]);
     }
 
 

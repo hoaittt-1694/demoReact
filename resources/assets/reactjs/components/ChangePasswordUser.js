@@ -35,10 +35,16 @@ export default class ChangePasswordUser extends Component {
         event.preventDefault();
 
         Authentication.changePassword(this.state.old_password, this.state.new_password, this.state.new_password_confirm).then((res) => {
-            console.log(res);
+            if (res.user) {
+                this.setState({
+                    notificationMessage: "Change password successful",
+                    notificationType: "success",
+                })
+            } else {
                 this.setState({
                     errors: res.errors
                 })
+            }   
         })
     }
 
@@ -63,7 +69,7 @@ export default class ChangePasswordUser extends Component {
                                 value={this.state.old_password}
                                 onChange={this.onChange}
                             />
-                            {this.state.errors ? (
+                            {this.state.errors && this.state.errors.old_password ? (
                                 <label className="text-danger">{this.state.errors.old_password}</label>
                             ) : (
                                 ''
@@ -78,7 +84,7 @@ export default class ChangePasswordUser extends Component {
                                 value={this.state.newPass}
                                 onChange={this.onChange}
                             />
-                            {this.state.errors ? (
+                            {this.state.errors && this.state.errors.new_password ? (
                                 <label className="text-danger">{this.state.errors.new_password}</label>
                             ) : (
                                 ''
@@ -93,7 +99,7 @@ export default class ChangePasswordUser extends Component {
                                 value={this.state.new_password_confirm}
                                 onChange={this.onChange}
                             />
-                            {this.state.errors ? (
+                            {this.state.errors && this.state.errors.new_password_confirm ? (
                                 <label className="text-danger">{this.state.errors.new_password_confirm}</label>
                             ) : (
                                 ''
