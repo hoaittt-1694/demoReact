@@ -1,18 +1,18 @@
-import React, { Component } from 'react'
-import * as ToDoAPI from '../api/ToDo'
+import React, { Component } from 'react';
+import * as ToDoAPI from '../api/ToDo';
 
 export default class List extends Component {
     constructor() {
-        super()
+        super();
         this.state = {
             id: '',
             title: '',
             editDisabled:false,
             errors: '', 
             items:[]
-        }
-        this.onSubmit = this.onSubmit.bind(this)
-        this.onChange = this.onChange.bind(this)
+        };
+        this.onSubmit = this.onSubmit.bind(this);
+        this.onChange = this.onChange.bind(this);
     }
 
     componentDidMount() {
@@ -36,12 +36,12 @@ export default class List extends Component {
     }
 
     onSubmit(e) {
-        e.preventDefault()
+        e.preventDefault();
         ToDoAPI.addTask(this.state.title).then((data) => {
             console.log(data);
             if (!data.errors) {
-                let items = [...this.state.items]
-                items.push(data)
+                let items = [...this.state.items];
+                items.push(data);
                 this.setState({
                     title: '',
                     items: items
@@ -57,17 +57,17 @@ export default class List extends Component {
     }
 
     onUpdate(e) {
-        e.preventDefault()
-        let items = [...this.state.items]
+        e.preventDefault();
+        let items = [...this.state.items];
         ToDoAPI.updateTask(this.state.title, this.state.id).then((data) => {  
             if (!data.errors) {
                 items.some((item, index) => {
                     if (item.id === data.id) {
-                        items[index] = data
+                        items[index] = data;
                         return true
                     }
                     return false
-                })
+                });
                 this.setState({
                     title: '',
                     items: items,
@@ -84,8 +84,8 @@ export default class List extends Component {
     }
 
     onEdit(itemId, e) {
-        e.preventDefault()
-        let data = [...this.state.items]
+        e.preventDefault();
+        let data = [...this.state.items];
         data.forEach((item) => {
             if (item.id === itemId) {
                 this.setState({
@@ -98,16 +98,16 @@ export default class List extends Component {
     }
 
     onDelete (val, e) {
-        e.preventDefault()
+        e.preventDefault();
         ToDoAPI.deleteTask(val).then((data)=>{
-            let items = [...this.state.items]
+            let items = [...this.state.items];
             items.some((item, index) => {
                 if (item.id === data.id) {
-                    items.splice(index, 1)
-                    return true
+                    items.splice(index, 1);
+                    return true;
                 }
-                return false
-            })
+                return false;
+            });
             this.setState({
                 title: '',
                 items: items

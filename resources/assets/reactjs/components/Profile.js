@@ -1,20 +1,20 @@
-import React, { Component } from 'react'
+import React, { Component } from 'react';
 import {Alert, Button, ControlLabel, FormControl, FormGroup} from "react-bootstrap";
 import * as Authentication from "../api/Authentication";
 
 export default class Profile extends Component {
     constructor(props) {
-        super(props)
+        super(props);
         this.state = {
             name: "",
             email: "",
             notificationMessage: "",
             notificationType: "",
             errors: null
-        }
+        };
 
-        this.onChange = this.onChange.bind(this)
-        this.onSubmit = this.onSubmit.bind(this)
+        this.onChange = this.onChange.bind(this);
+        this.onSubmit = this.onSubmit.bind(this);
     }
 
     componentDidMount(){
@@ -27,7 +27,7 @@ export default class Profile extends Component {
     }
 
     validateForm() {
-        return this.state.name.length > 0
+        return this.state.name.length > 2
     }
 
     onChange(event) {
@@ -40,16 +40,21 @@ export default class Profile extends Component {
     }
 
     onSubmit(event) {
-        event.preventDefault()
+        event.preventDefault();
 
         Authentication.updateProfile(this.state.name).then((res) => {
             console.log(res);
             if (res.user) {
                 this.setState({
                     name: res.user.name,
+                    notificationMessage: "Edit profile successful!",
+                    notificationType: "success",
                 })
             } else {
-               //
+                this.setState({
+                    notificationMessage: "Edit profile failure!",
+                    notificationType: "danger",
+                })
             }
         })
     }
@@ -91,11 +96,6 @@ export default class Profile extends Component {
                                 value={this.state.email}
                                 onChange={this.onChange}
                             />
-                            {this.state.errors ? (
-                                <label className="text-danger">{this.state.errors.email}</label>
-                            ) : (
-                                ''
-                            )}
                         </FormGroup>
                         <Button
                             className="btn btn-lg btn-success btn-block"

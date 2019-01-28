@@ -1,17 +1,17 @@
-import React, { Component } from 'react'
-import { Link, withRouter } from 'react-router-dom'
-import Auth from '../../service/Auth'
+import React, { Component } from 'react';
+import { Link, withRouter } from 'react-router-dom';
+import Auth from '../../service/Auth';
 
 class Navbar extends Component {
     constructor(props) {
-        super(props)
-        this.logOut = this.logOut.bind(this)
+        super(props);
+        this.logOut = this.logOut.bind(this);
     }
 
     logOut(event) {
-        event.preventDefault()
-        Auth.deleteAuthenticateUser()
-        this.props.history.push(`/login`)
+        event.preventDefault();
+        Auth.deleteAuthenticateUser();
+        this.props.history.push(`/login`);
     }
 
     render() {
@@ -31,7 +31,7 @@ class Navbar extends Component {
                     </Link>
                 </li>
             </ul>
-        )
+        );
 
         const userLink = (
             <ul className="navbar-nav">
@@ -49,7 +49,7 @@ class Navbar extends Component {
                     </Link>
                 </li>
             </ul>
-        )
+        );
 
         return(
             <nav className="navbar navbar-expand-lg navbar-light bg-light">
@@ -71,4 +71,4 @@ class Navbar extends Component {
     }
 }
 
-export default withRouter(Navbar)
+export default withRouter(Navbar);

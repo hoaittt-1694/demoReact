@@ -1,20 +1,20 @@
-import React, { Component } from "react"
-import {Button, FormGroup, FormControl, ControlLabel, Alert} from "react-bootstrap"
-import * as Authentication from '../../api/Authentication'
+import React, { Component } from "react";
+import {Button, FormGroup, FormControl, ControlLabel, Alert} from "react-bootstrap";
+import * as Authentication from '../../api/Authentication';
 
 export default class Login extends Component {
     constructor(props) {
-        super(props)
+        super(props);
         this.state = {
             email: "",
             password: "",
             notificationMessage: "",
             notificationType: "",
             errors: null
-        }
+        };
 
-        this.onChange = this.onChange.bind(this)
-        this.onSubmit = this.onSubmit.bind(this)
+        this.onChange = this.onChange.bind(this);
+        this.onSubmit = this.onSubmit.bind(this);
     }
 
     validateForm() {
@@ -31,11 +31,11 @@ export default class Login extends Component {
     }
 
     onSubmit(event) {
-        event.preventDefault()
+        event.preventDefault();
         const user = {
             email: this.state.email,
             password: this.state.password,
-        }
+        };
 
         Authentication.loginUser(user).then((res) => {
             if (res.token) {

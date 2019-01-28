@@ -1,10 +1,10 @@
-import React, { Component } from "react"
-import { Button, FormGroup, FormControl, ControlLabel, Alert } from "react-bootstrap"
-import * as Authentication from '../../api/Authentication'
+import React, { Component } from "react";
+import { Button, FormGroup, FormControl, ControlLabel, Alert } from "react-bootstrap";
+import * as Authentication from '../../api/Authentication';
 
 export default class Register extends Component {
     constructor(props) {
-        super(props)
+        super(props);
         this.state = {
             name: "",
             email: "",
@@ -13,32 +13,34 @@ export default class Register extends Component {
             notificationMessage: "",
             notificationType: "",
             errors: null,
-        }
+        };
 
-        this.onChange = this.onChange.bind(this)
-        this.onSubmit = this.onSubmit.bind(this)
+        this.onChange = this.onChange.bind(this);
+        this.onSubmit = this.onSubmit.bind(this);
     }
 
     validateForm() {
         return this.state.name.length > 0 && this.state.email.length > 0
-            && this.state.password.length > 0 && this.state.password_confirm.length > 0
+            && this.state.password.length > 0 && this.state.password_confirm.length > 0;
     }
 
     onChange(event) {
         this.setState({
+            notificationMessage: "",
+            notificationType: "",
             errors: null,
             [event.target.name]: event.target.value
         })
     }
 
     onSubmit(event) {
-        event.preventDefault()
+        event.preventDefault();
             const newUser = {
                 name: this.state.name,
                 email: this.state.email,
                 password: this.state.password,
                 password_confirm: this.state.password_confirm
-            }
+            };
 
             Authentication.registerUser(newUser).then((res) => {
                 if (res.user) {
@@ -47,13 +49,13 @@ export default class Register extends Component {
                         email: "",
                         password: "",
                         password_confirm: "",
-                        notification: "Register success! Please check your email to activate your account",
+                        notificationMessage: "Register success! Please check your email to activate your account",
                         notificationType: "success"
                     })
                 } else {
                     this.setState({
                         errors: res.errors,
-                        notification: "Register user fail",
+                        notificationMessage: "Register user failure",
                         notificationType: "danger"
                     })
                 }
@@ -63,9 +65,9 @@ export default class Register extends Component {
     render() {
         return (
             <div className="container">
-                {this.state.notification ? (
+                {this.state.notificationMessage ? (
                     <Alert  bsStyle={this.state.notificationType}>
-                        <label>{this.state.notification}</label>
+                        <label>{this.state.notificationMessage}</label>
                     </Alert>
                 ) : (
                     ''
@@ -148,7 +150,7 @@ export default class Register extends Component {
                             disabled={!this.validateForm()}
                             type="submit"
                         >
-                            Register User
+                            Register
                         </Button>
                     </form>
                 </div>

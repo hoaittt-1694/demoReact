@@ -1,5 +1,5 @@
-import axios from 'axios'
-import Auth from '../service/Auth'
+import axios from 'axios';
+import Auth from '../service/Auth';
 
 export const getList = () => {
     return axios
@@ -9,7 +9,7 @@ export const getList = () => {
         .then(response => {
             return response.data
         })
-}
+};
 
 export const addTask = title => {
     return axios
@@ -26,7 +26,7 @@ export const addTask = title => {
                 return error.data
             }
         })
-}
+};
 
 export const updateTask = (title, id) => {
     return axios
@@ -43,7 +43,7 @@ export const updateTask = (title, id) => {
                 return error.data
             }
         })
-}
+};
 
 export const deleteTask = id => {
     return axios
@@ -56,4 +56,4 @@ export const deleteTask = id => {
         .catch(error => {
             return error
         })
-}
+};

@@ -1,5 +1,5 @@
-import axios from 'axios'
-import Auth from '../service/Auth'
+import axios from 'axios';
+import Auth from '../service/Auth';
 
 export const registerUser = (user) => {
     return axios
@@ -12,7 +12,7 @@ export const registerUser = (user) => {
         .catch(error => {
             return error.data
         })
-}
+};
 
 export const loginUser = (user) => {
     return axios
@@ -20,16 +20,15 @@ export const loginUser = (user) => {
             headers: {'Content-Type': 'application/json'}
         })
         .then(response => {
-            Auth.authenticateUser(response.data.token)
+            Auth.authenticateUser(response.data.token);
             return response.data
         })
         .catch(error => {
             return error.data
         })
-}
+};
 
 export const getProfile = () => {
-    let self = this;
     return axios
         .get('/api/profile', {
             headers: { Authorization: `Bearer ${Auth.getToken()}`}
@@ -40,10 +39,10 @@ export const getProfile = () => {
         .catch(error => {
             return error.data
         })
-}
+};
 
 export const updateProfile = (name) => {
-    const postData = {name}
+    const postData = {name};
     return axios
         .put('/api/profile', postData, {
             headers: { Authorization: `Bearer ${Auth.getToken()}`}
@@ -54,20 +53,18 @@ export const updateProfile = (name) => {
         .catch(error => {
             return error
         })
-}
+};
 
 export const resendVerifyCode = (email) => {
-    const postData = {email}
+    const postData = {email};
     return axios
         .post('api/user/activation', postData, {
             headers: {'Content-Type': 'application/json'}
         })
         .then(response => {
-            console.log(response);
-            // Auth.authenticateUser(response.data.token)
             return response.data
         })
         .catch(error => {
             return error.data
         })
-}
+};

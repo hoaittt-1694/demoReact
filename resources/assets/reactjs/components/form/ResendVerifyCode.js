@@ -1,46 +1,56 @@
-import React, { Component } from "react"
-import {Button, FormGroup, FormControl, ControlLabel, Alert} from "react-bootstrap"
-import * as Authentication from '../../api/Authentication'
+import React, { Component } from "react";
+import {Button, FormGroup, FormControl, ControlLabel, Alert} from "react-bootstrap";
+import * as Authentication from '../../api/Authentication';
 
 export default class ResendVerifyCode extends Component {
     constructor(props) {
-        super(props)
+        super(props);
         this.state = {
             email: "",
             title: "Please check mail or enter your email to resend active code.",
-            errors: null,
             notificationMessage: "",
             notificationType: "",
-        }
+        };
 
-        this.onChange = this.onChange.bind(this)
-        this.onSubmit = this.onSubmit.bind(this)
+        this.onChange = this.onChange.bind(this);
+        this.onSubmit = this.onSubmit.bind(this);
     }
 
     validateForm() {
-        return this.state.email.length > 0
+        return this.state.email.length > 0;
     }
 
     onChange(event) {
         this.setState({
-            errors: null,
-            [event.target.name]: event.target.value
+            [event.target.name]: event.target.value,
+            notificationMessage: "",
+            notificationType: ""
         })
     }
 
     onSubmit(event) {
-        event.preventDefault()
+        event.preventDefault();
         Authentication.resendVerifyCode(this.state.email).then((res) => {
-           if (res.code === 200) {
-               this.setState({
-                   email: "",
-                   title: "",
-                   notification: "Resend verify code success! Please check your email to activate your account",
-                   notificationType: "success"
-               })
-           } else {
-               //
-           }
+            this.setState({
+                email: "",
+                title: "",
+            });
+            if (res.message === 're_email_activated') {
+                this.setState({
+                    notificationMessage: "User has active, please login",
+                    notificationType: "waning"
+                })
+            } else if (res.error === 'email_not_available') {
+                this.setState({
+                    notificationMessage: "Sorry, this email is not registered with us, please input correct email",
+                    notificationType: "danger"
+                })
+            } else {
+                this.setState({
+                    notificationMessage: "You have send successfully verify your email address",
+                    notificationType: "success"
+                })
+            }
         })
     }
 
@@ -48,9 +58,9 @@ export default class ResendVerifyCode extends Component {
         return (
             <div className="Login container">
                 <h3 className="text-center" >{this.state.title}</h3>
-                {this.state.notification ? (
+                {this.state.notificationMessage ? (
                     <Alert  bsStyle={this.state.notificationType}>
-                        <label>{this.state.notification}</label>
+                        <label>{this.state.notificationMessage}</label>
                     </Alert>
                 ) : (
                     ''
@@ -66,11 +76,6 @@ export default class ResendVerifyCode extends Component {
                             value={this.state.email}
                             onChange={this.onChange}
                         />
-                        {this.state.errors ? (
-                            <label className="text-danger">{this.state.errors.email}</label>
-                        ) : (
-                            ''
-                        )}
                     </FormGroup>
                     <Button
                         className= "btn btn-lg btn-success btn-block"

@@ -87,7 +87,7 @@ class UsersController extends BaseController
                 ->where('active_token', $verificationCode)->first();
 
         if (!$user) {
-            return response()->json(['token_expired_or_old'], 403);
+            return redirect('/token-expired');
         }
         if ($user->active_token_expire <= Carbon::now()
             && !is_null($user->active_token) && $user->is_active == 0) {
@@ -106,7 +106,7 @@ class UsersController extends BaseController
             return redirect('/login');
         }
 
-        return redirect('/token-expired');
+        return redirect('/resend-verify');
     }
 
     public function resendVerifyCode(Request $request)
@@ -115,7 +115,7 @@ class UsersController extends BaseController
         $user = User::where('email', strtolower($email))->first();
 
         if (!$user) {
-            return response()->json(['error' => 'Email is not available'], 403);
+            return response()->json(['error' => 'email_not_available'], 403);
         }
         if ($user->is_active) {
             return response()->json(['message' => 're_email_activated'], 200);
@@ -125,6 +125,7 @@ class UsersController extends BaseController
             'active_token_expire' => Carbon::now()->addDay(),
         ]);
         EmailService::send(new ActivationAccount($user), $user->email);
-        return $this->responseSuccess(['message' =>'resend_activation_success']);
+
+        return response()->json(['message' => 'resend_activation_success'], 200);
     }
 }
