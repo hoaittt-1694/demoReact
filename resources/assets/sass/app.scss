@@ -14,21 +14,21 @@
 }
 
 @media all and (min-width: 480px) {
+  .Login .Register, .todoList{
+    padding: 20px 0;
+  }
+
   .Login {
-    padding: 20px 0;
+      form {
+        margin: 0 auto;
+        max-width: 320px;
+      }
   }
 
-  .Login form {
-    margin: 0 auto;
-    max-width: 320px;
-  }
-
-  .Register, .todoList {
-    padding: 20px 0;
-  }
-
-  .Register, .todoList form {
-    margin: 0 auto;
-    max-width: 550px;
+  .Register {
+      form {
+        margin: 0 auto;
+        max-width: 550px;
+      }
   }
 }

@@ -85,7 +85,6 @@ class UsersController extends BaseController
     public function changePasswordUser(UserChangePasswordRequest $request) {
         $oldPassword = $request->input('old_password');
         $newPassword = $request->input('new_password');
-        $newPasswordConfirm = $request->input('new_password_confirm');
 
         $user = Auth::User();
         $currentPassword = $user->password;
@@ -146,5 +145,16 @@ class UsersController extends BaseController
         EmailService::send(new ActivationAccount($user), $user->email);
 
         return response()->json(['message' => 'resend_activation_success'], 200);
+    }
+
+    public function logout()
+    {
+        try {
+            JWTAuth::invalidate(JWTAuth::getToken());
+
+            return response()->json(['success' => true, 'message' => 'Logout_successful'], 200);
+        } catch (JWTException $e) {
+            return response()->json(['success' => false, 'error' => 'Failed_to_logout'], 500);
+        }
     }
 }

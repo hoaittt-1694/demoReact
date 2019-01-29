@@ -16,6 +16,7 @@ Auth::routes(['verify' => true]);
 Route::group(['namespace' => 'Api'], function () {
     Route::post('register', 'UsersController@register');
     Route::post('login', 'UsersController@login');
+    Route::post('logout', 'UsersController@logout');
     Route::get('user/activation/{email}/{active_token}', 'UsersController@verifyCode');
     Route::post('user/activation', 'UsersController@resendVerifyCode');
 

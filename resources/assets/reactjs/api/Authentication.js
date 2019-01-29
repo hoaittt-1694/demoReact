@@ -83,3 +83,17 @@ export const resendVerifyCode = (email) => {
             return error.data
         })
 };
+
+export const logout = (token) => {
+    const postData = {token};
+    return axios
+        .post('api/logout', postData, {
+            headers: { Authorization: `Bearer ${Auth.getToken()}`}
+        })
+        .then(response => {
+            return response.data;
+        })
+        .catch(error => {
+            return error.data;
+        })
+};

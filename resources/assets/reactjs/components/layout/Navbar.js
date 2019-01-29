@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import Auth from '../../service/Auth';
+import * as Authentication from '../../api/Authentication';
 
 class Navbar extends Component {
     constructor(props) {
@@ -10,8 +11,12 @@ class Navbar extends Component {
 
     logOut(event) {
         event.preventDefault();
-        Auth.deleteAuthenticateUser();
-        this.props.history.push(`/login`);
+
+        let token = Auth.getToken();
+        Authentication.logout(token).then(() => {
+            Auth.deleteAuthenticateUser();
+            this.props.history.push(`/login`);
+        })
     }
 
     render() {
