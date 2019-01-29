@@ -2,8 +2,6 @@
 
 namespace App\Http\Requests\Api;
 
-use Illuminate\Foundation\Http\FormRequest;
-
 class UserUpdateRequest extends BaseRequest
 {
     /**
@@ -14,7 +12,7 @@ class UserUpdateRequest extends BaseRequest
     public function rules()
     {
         return [
-            'name' => 'max:20',
+            'name' => ['required', 'string', 'max:255', 'min:3'],
         ];
     }
 

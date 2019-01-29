@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests\Api;
 
-class UserRegisterRequest extends BaseRequest
+class UserLoginRequest extends BaseRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,10 +22,13 @@ class UserRegisterRequest extends BaseRequest
     public function rules()
     {
         return [
-            'name' => ['required', 'string', 'max:255', 'min:3'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'email' => ['required', 'string', 'email'],
             'password' => ['required', 'string', 'min:6'],
-            'password_confirm' => ['required_with:password', 'same:password', 'min:6']
         ];
+    }
+
+    public function messages()
+    {
+        return array_merge(parent::messages(), []);
     }
 }

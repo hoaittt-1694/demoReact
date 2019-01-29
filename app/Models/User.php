@@ -3,10 +3,13 @@
 namespace App\Models;
 
 use App\Models\Traits\ApiScopes;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Support\Facades\Hash;
+use Tymon\JWTAuth\Contracts\JWTSubject;
 
-class User extends Authenticatable
+class User extends Authenticatable implements JWTSubject, MustVerifyEmail
 {
     use Notifiable;
     use ApiScopes;
@@ -20,6 +23,9 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'is_active',
+        'active_token',
+        'active_token_expire'
     ];
 
     /**
@@ -32,6 +38,23 @@ class User extends Authenticatable
         'remember_token',
     ];
 
+    protected $dates = [
+        'active_token_expire',
+    ];
+
+    public function tasks()
+    {
+        return $this->hasMany(Task::class);
+    }
+
+    public function setEmailAttribute($email) {
+        $this->attributes['email'] = strtolower($email);
+    }
+
+    public function setPasswordAttribute($password) {
+        $this->attributes['password'] = Hash::make($password);
+    }
+
     public function hasDefinePrivilege($permission)
     {
         //TODO: check role
@@ -42,5 +65,15 @@ class User extends Authenticatable
     {
         //TODO: check admin
         return false;
+    }
+
+    public function getJWTIdentifier()
+    {
+        return $this->getKey();
+    }
+    
+    public function getJWTCustomClaims()
+    {
+        return [];
     }
 }

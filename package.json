@@ -18,6 +18,8 @@
         "laravel-mix": "^2.0",
         "popper.js": "^1.12",
         "react": "^16.2.0",
-        "react-dom": "^16.2.0"
+        "react-dom": "^16.2.0",
+        "react-bootstrap": "^0.32.4",
+        "react-router-dom": "^4.3.1"
     }
 }

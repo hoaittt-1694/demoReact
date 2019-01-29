@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests\Api;
 
-class UserRegisterRequest extends BaseRequest
+use Illuminate\Foundation\Http\FormRequest;
+
+class UserChangePasswordRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,10 +24,9 @@ class UserRegisterRequest extends BaseRequest
     public function rules()
     {
         return [
-            'name' => ['required', 'string', 'max:255', 'min:3'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'password' => ['required', 'string', 'min:6'],
-            'password_confirm' => ['required_with:password', 'same:password', 'min:6']
+            'old_password' => ['required', 'string', 'min:6'],
+            'new_password' => ['required', 'string', 'min:6'],
+            'new_password_confirm' => ['required_with:new_password', 'same:new_password', 'min:6']
         ];
     }
 }

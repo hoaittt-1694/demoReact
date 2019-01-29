@@ -18,3 +18,4 @@ Route::namespace('Web')->group(function () {
 Route::get( '/{any}', function () {
     return view('web/index');
 })->where('any', '.*');
+Auth::routes(['verify' => true]);

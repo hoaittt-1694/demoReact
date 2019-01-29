@@ -2,158 +2,159 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Mail\User\WelcomeMail;
-use App\Models\User;
-use App\Services\Api\UserService;
-use App\Services\Helpers\EmailService;
-use Illuminate\Http\Request;
-use JWTAuth;
-
+use App\Http\Requests\Api\UserChangePasswordRequest;
+use App\Http\Requests\Api\UserLoginRequest;
 use App\Http\Requests\Api\UserRegisterRequest;
 use App\Http\Requests\Api\UserUpdateRequest;
-use App\Services\Api\Contracts\UserServiceInterface;
+use App\Mail\User\ActivationAccount;
+use App\Models\User;
+use Carbon\Carbon;
+use App\Services\Helpers\EmailService;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Tymon\JWTAuth\Exceptions\JWTException;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class UsersController extends BaseController
 {
-    protected $service;
-
-    public function __construct(UserServiceInterface $service)
-    {
-        parent::__construct();
-
-        $this->service = $service;
-    }
-
-    /**
-     * @api {post} /user/register Register user by email
-     * @apiName Register
-     * @apiGroup User
-     *
-     *
-     * @apiParam {String} name (Required) name, max 20 character
-     * @apiParam {String} email (Required) Unique email
-     * @apiParam {String} password (Required) Password: min 6 chararacter
-     *
-     * @apiSuccess {Array} user User's infomations.
-     *
-     * @apiSuccessExample Success-Response:
-     *     HTTP/1.1 200 OK
-     *     {
-     *       "code": "200",
-     *       "user": {
-     *          "name": "name",
-     *          "email": "email@framgia.com",
-     *          "updated_at": "2017-06-19 10:21:15",
-     *          "created_at": "2017-06-19 10:21:15",
-     *          "id": 3
-     *       }
-     *     }
-     *
-     * @apiError 600 Validate failed
-     * @apiError 601 Cannot save
-     * @apiError 701 Email exists
-     *
-     * @apiErrorExample Error-Response:
-     *     HTTP/1.1 200 OK
-     *     {
-     *       "code": "600",
-     *       "message": "Validate failed!"
-     *     }
-     */
     public function register(UserRegisterRequest $request)
     {
-        $inputs = $request->only('name', 'email', 'password');
+        $user = User::create([
+            'name' => $request->get('name'),
+            'email' => $request->get('email'),
+            'password' =>$request->get('password'),
+            'active_token' => str_random(30),
+            'active_token_expire' => Carbon::now()->addDay()
+        ]);
 
-        $user = $this->service->create($inputs);
         if ($user) {
-            //Send welcome email
-            EmailService::send(new WelcomeMail($user), $user->email);
+            EmailService::send(new ActivationAccount($user), $user->email);
 
-            return $this->responseSuccess(compact('user'));
+            return response()->json(compact('user'), 201);
         }
 
-        return $this->responseErrors(config('code.basic.save_failed'), trans('messages.validate.save_failed'));
+        return response()->json(['error' => 'register_fail'], 400);
     }
 
-    /**
-     * @api {put} /user/me Update user's profile
-     * @apiName Update user's profile
-     * @apiGroup User
-     *
-     * @apiUse RequireAuthHeader
-     *
-     * @apiParam {String} name (Required) name, max 20 character
-     * @apiParam {String} birthday  birthday, format: Y-m-
-     * @apiParam {String} job job, max 255 character
-     *
-     * @apiSuccess {String} code 200
-     *
-     * @apiSuccessExample Success-Response:
-     *     HTTP/1.1 200 OK
-     *     {
-     *       "code": "200",
-     *     }
-     *
-     * @apiError 600 Validate failed
-     *
-     * @apiErrorExample Error-Response:
-     *     HTTP/1.1 200 OK
-     *     {
-     *       "code": "600",
-     *       "message": "Validate failed!"
-     *     }
-     */
+    public function login(UserLoginRequest $request)
+    {
+        $credentialsRequest = $request->only('email', 'password');
+        $credentials = [
+            'email' => $credentialsRequest['email'],
+            'password' => $credentialsRequest['password'],
+        ];
+
+        try {
+            if (!$token = JWTAuth::attempt($credentials)) {
+                return response()->json(['error' => 'invalid_credentials'], 400);
+            }
+
+            $user = Auth::user();
+            if (!$user->is_active) {
+                return response()->json(['error' => 'email_is_not_activated'], 403);
+            }
+
+        } catch (JWTException $e) {
+            return response()->json(['success' => false, 'error' => 'could_not_create_token'], 500);
+        }
+
+        return response()->json(compact('token'));
+    }
+
+    public function getProfile()
+    {
+        $user = Auth::user();
+        return response()->json(compact('user'));
+    }
+
     public function updateProfile(UserUpdateRequest $request)
     {
-        $inputs = $request->only('name');
+        $name = $request->input('name');
+        $user = Auth::user();
 
-        $updated = $this->service->update(auth()->user(), $inputs);
+        $updated = $user->update([
+            'name' => $name
+        ]);
         if ($updated) {
-            return $this->responseSuccess([]);
+            return response()->json(compact('user'));
         }
-
-        return $this->responseErrors(config('code.basic.save_failed'), trans('messages.validate.save_failed'));
+        return response()->json(['error' => 'save fail']);
     }
 
-    /**
-     * @api {get} /user/me Get current user
-     * @apiName Get current user
-     * @apiGroup User
-     *
-     * @apiUse RequireAuthHeader
-     *
-     * @apiSuccess {Array} user user info
-     *
-     * @apiSuccessExample Success-Response:
-     *     HTTP/1.1 200 OK
-     *     {
-     *       "code": "200",
-     *       "user": {
-     *          "id": 2,
-     *          "email": 'user@email.com',
-     *          "name": "Abc",
-     *          "created_at": "2017-06-28 08:54:27",
-     *          "updated_at": "2017-07-13 10:28:12",
-     *          "birthday": "1993-07-27",
-     *       }
-     *     }
-     *
-     * @apiError 706 User not found
-     *
-     * @apiErrorExample Error-Response:
-     *     HTTP/1.1 200 OK
-     *     {
-     *       "code": "706",
-     *       "message": "User not found"
-     *     }
-     */
-    public function getCurrentUser(Request $request)
+    public function changePasswordUser(UserChangePasswordRequest $request) {
+        $oldPassword = $request->input('old_password');
+        $newPassword = $request->input('new_password');
+
+        $user = Auth::User();
+        $currentPassword = $user->password;
+        if(Hash::check($oldPassword, $currentPassword)) {
+            $updated = $user->update(['password' => $newPassword]);
+            if ($updated) {
+                return response()->json(compact('user'));
+            }
+        }
+        
+        return response()->json(['errors' => ['old_password' => 'The old password is not correct']]);
+    }
+
+
+    public function verifyCode($email, $verificationCode)
     {
-        $user = auth()->user();
-        if ($user) {
-            return $this->responseSuccess(compact('user'));
+        $user = User::where('email', $email)
+                ->where('active_token', $verificationCode)->first();
+
+        if (!$user) {
+            return redirect('/token-expired');
+        }
+        if ($user->active_token_expire <= Carbon::now()
+            && !is_null($user->active_token) && $user->is_active == 0) {
+            return redirect('/token-expired');
         }
 
-        return $this->responseErrors(config('code.user.user_not_found'), trans('messages.user.user_not_found'));
+        if (!is_null($user->active_token)) {
+            if ($user->is_active) {
+                return redirect('/login');
+            }
+            $user->update([
+                'is_active' => 1,
+                'active_token_expire' => null,
+            ]);
+
+            return redirect('/login');
+        }
+
+        return redirect('/resend-verify');
+    }
+
+    public function resendVerifyCode(Request $request)
+    {
+        $email = filter_var($request->input('email'), FILTER_VALIDATE_EMAIL);
+        $user = User::where('email', $email)->first();
+
+        if (!$user) {
+            return response()->json(['error' => 'email_not_available'], 403);
+        }
+        if ($user->is_active) {
+            return response()->json(['message' => 're_email_activated'], 200);
+        }
+        $user->update([
+            'active_token' => str_random(30),
+            'active_token_expire' => Carbon::now()->addDay(),
+        ]);
+        EmailService::send(new ActivationAccount($user), $user->email);
+
+        return response()->json(['message' => 'resend_activation_success'], 200);
+    }
+
+    public function logout()
+    {
+        try {
+            JWTAuth::invalidate(JWTAuth::getToken());
+
+            return response()->json(['success' => true, 'message' => 'Logout_successful'], 200);
+        } catch (JWTException $e) {
+            return response()->json(['success' => false, 'error' => 'Failed_to_logout'], 500);
+        }
     }
 }
